@@ -3,6 +3,8 @@ pragma solidity ^0.8.4;
 import "../contracts/Library.sol";
 
 contract Fundraiser is Library {
+    using SafeMath for uint256;
+
     struct Funding{
         uint256 id;
         string name;
@@ -16,10 +18,10 @@ contract Fundraiser is Library {
     uint256 public availableFunds;
     
     function contribute() payable public{
-        balances[msg.sender] += msg.value;
+        balances[msg.sender].add(msg.value);
     }
     function withdraw() payable public {
-if(balances[msg.sender]== 0){
+if(balances[msg.sender] == 0){
     revert();
 }
 balances[msg.sender]=0;
@@ -32,8 +34,8 @@ payable (msg.sender).transfer(balances[msg.sender]);
     function redeemFunds(uint256 amount) onlyOwner payable external {
         require(funds[msg.sender]>= amount);
         require(availableFunds>= amount);
-        funds[msg.sender]-= amount;
-        availableFunds -= amount;
+        funds[msg.sender].sub(amount);
+        availableFunds .sub(amount);
         payable(msg.sender).transfer(amount);
     }
 }
